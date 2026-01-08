@@ -1,0 +1,686 @@
+@import "tailwindcss";
+
+/* ============================================
+   NEON DARK THEME - BLACK, WHITE & NEON ONLY
+   ============================================ */
+
+:root {
+  /* Core Colors */
+  --background: #000000;
+  --background-secondary: #0a0a0f;
+  --foreground: #ffffff;
+
+  /* Neon Palette */
+  --neon-cyan: #00ffff;
+  --neon-magenta: #ff00ff;
+  --neon-green: #00ff88;
+  --neon-purple: #8b5cf6;
+  --neon-pink: #ff0080;
+  --neon-blue: #00a8ff;
+
+  /* Glow Intensities */
+  --glow-cyan: rgba(0, 255, 255, 0.5);
+  --glow-magenta: rgba(255, 0, 255, 0.5);
+  --glow-green: rgba(0, 255, 136, 0.5);
+  --glow-purple: rgba(139, 92, 246, 0.5);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   NEON GLOW EFFECTS
+   ============================================ */
+
+.neon-glow-cyan {
+  box-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan),
+    0 0 20px var(--glow-cyan), 0 0 40px var(--glow-cyan);
+}
+
+.neon-glow-magenta {
+  box-shadow: 0 0 5px var(--neon-magenta), 0 0 10px var(--neon-magenta),
+    0 0 20px var(--glow-magenta), 0 0 40px var(--glow-magenta);
+}
+
+.neon-glow-green {
+  box-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green),
+    0 0 20px var(--glow-green);
+}
+
+.neon-text-cyan {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--glow-cyan),
+    0 0 20px var(--glow-cyan);
+}
+
+.neon-text-magenta {
+  color: var(--neon-magenta);
+  text-shadow: 0 0 5px var(--neon-magenta), 0 0 10px var(--glow-magenta);
+}
+
+/* ============================================
+   3D CARD EFFECTS
+   ============================================ */
+
+.card-3d {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.card-3d-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.card-3d:hover .card-3d-inner {
+  transform: rotateY(10deg) rotateX(5deg) translateZ(20px);
+}
+
+.card-tilt {
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+  transform-style: preserve-3d;
+}
+
+.card-tilt:hover {
+  transform: perspective(1000px) rotateX(5deg) rotateY(-5deg) translateZ(10px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px var(--glow-cyan);
+}
+
+/* ============================================
+   GLASSMORPHISM WITH NEON BORDERS
+   ============================================ */
+
+.glass {
+  background: rgba(10, 10, 15, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-neon {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.05),
+    0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+.glass-neon:hover {
+  border-color: rgba(0, 255, 255, 0.4);
+  box-shadow: inset 0 0 40px rgba(0, 255, 255, 0.1),
+    0 0 40px rgba(0, 255, 255, 0.2);
+}
+
+/* ============================================
+   NEON PULSE ANIMATIONS
+   ============================================ */
+
+@keyframes neon-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan),
+      0 0 20px var(--glow-cyan);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan),
+      0 0 40px var(--glow-cyan), 0 0 60px var(--glow-cyan);
+    opacity: 0.9;
+  }
+}
+
+@keyframes neon-pulse-magenta {
+  0%,
+  100% {
+    box-shadow: 0 0 5px var(--neon-magenta), 0 0 10px var(--neon-magenta),
+      0 0 20px var(--glow-magenta);
+  }
+  50% {
+    box-shadow: 0 0 10px var(--neon-magenta), 0 0 20px var(--neon-magenta),
+      0 0 40px var(--glow-magenta);
+  }
+}
+
+.animate-neon-pulse {
+  animation: neon-pulse 2s ease-in-out infinite;
+}
+
+.animate-neon-pulse-magenta {
+  animation: neon-pulse-magenta 2s ease-in-out infinite;
+}
+
+/* ============================================
+   GLITCH TEXT EFFECT
+   ============================================ */
+
+@keyframes glitch {
+  0% {
+    text-shadow: 0.05em 0 0 var(--neon-cyan),
+      -0.05em -0.025em 0 var(--neon-magenta),
+      -0.025em 0.05em 0 var(--neon-green);
+  }
+  14% {
+    text-shadow: 0.05em 0 0 var(--neon-cyan),
+      -0.05em -0.025em 0 var(--neon-magenta),
+      -0.025em 0.05em 0 var(--neon-green);
+  }
+  15% {
+    text-shadow: -0.05em -0.025em 0 var(--neon-cyan),
+      0.025em 0.025em 0 var(--neon-magenta), -0.05em -0.05em 0 var(--neon-green);
+  }
+  49% {
+    text-shadow: -0.05em -0.025em 0 var(--neon-cyan),
+      0.025em 0.025em 0 var(--neon-magenta), -0.05em -0.05em 0 var(--neon-green);
+  }
+  50% {
+    text-shadow: 0.025em 0.05em 0 var(--neon-cyan),
+      0.05em 0 0 var(--neon-magenta), 0 -0.05em 0 var(--neon-green);
+  }
+  99% {
+    text-shadow: 0.025em 0.05em 0 var(--neon-cyan),
+      0.05em 0 0 var(--neon-magenta), 0 -0.05em 0 var(--neon-green);
+  }
+  100% {
+    text-shadow: -0.025em 0 0 var(--neon-cyan),
+      -0.025em -0.025em 0 var(--neon-magenta),
+      -0.025em -0.05em 0 var(--neon-green);
+  }
+}
+
+.glitch-text {
+  animation: glitch 1s infinite;
+}
+
+/* ============================================
+   FLOATING ANIMATION
+   ============================================ */
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotateZ(0deg);
+  }
+  25% {
+    transform: translateY(-10px) rotateZ(1deg);
+  }
+  75% {
+    transform: translateY(5px) rotateZ(-1deg);
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+/* ============================================
+   HOLOGRAPHIC SCAN LINE EFFECT
+   ============================================ */
+
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.holographic {
+  position: relative;
+  overflow: hidden;
+}
+
+.holographic::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--neon-cyan),
+    transparent
+  );
+  animation: scan-line 3s linear infinite;
+  opacity: 0.5;
+}
+
+/* ============================================
+   NEON BORDER ANIMATION
+   ============================================ */
+
+@keyframes border-glow {
+  0%,
+  100% {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px var(--glow-cyan);
+  }
+  33% {
+    border-color: var(--neon-magenta);
+    box-shadow: 0 0 10px var(--glow-magenta);
+  }
+  66% {
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 10px var(--glow-purple);
+  }
+}
+
+.animate-border-glow {
+  animation: border-glow 4s ease-in-out infinite;
+}
+
+/* ============================================
+   ROTATING 3D RING
+   ============================================ */
+
+@keyframes rotate-ring {
+  from {
+    transform: rotateY(0deg) rotateX(60deg);
+  }
+  to {
+    transform: rotateY(360deg) rotateX(60deg);
+  }
+}
+
+.rotating-ring {
+  animation: rotate-ring 8s linear infinite;
+  transform-style: preserve-3d;
+}
+
+/* ============================================
+   PROGRESS BAR ANIMATIONS
+   ============================================ */
+
+@keyframes progress-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 10px var(--neon-cyan);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--neon-cyan), 0 0 30px var(--glow-cyan);
+  }
+}
+
+.progress-neon {
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+  animation: progress-glow 2s ease-in-out infinite;
+}
+
+/* ============================================
+   PARTICLE BACKGROUND
+   ============================================ */
+
+@keyframes particle-float {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.5;
+  }
+  25% {
+    transform: translateY(-50px) translateX(20px) scale(1.2);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-100px) translateX(-10px) scale(0.8);
+    opacity: 0.7;
+  }
+  75% {
+    transform: translateY(-50px) translateX(-20px) scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--neon-cyan);
+  box-shadow: 0 0 10px var(--neon-cyan);
+  animation: particle-float 8s ease-in-out infinite;
+}
+
+/* ============================================
+   ROBOT ANIMATION STYLES
+   ============================================ */
+
+.robot-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.robot-glow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow-cyan) 0%, transparent 70%);
+  opacity: 0;
+  animation: pulse-glow 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.robot-speaking .robot-glow {
+  opacity: 1;
+  animation: speaking-glow 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes speaking-glow {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.15);
+    filter: hue-rotate(30deg);
+  }
+}
+
+/* ============================================
+   MENU ITEMS WITH NEON GLOW
+   ============================================ */
+
+.menu-item {
+  position: relative;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.menu-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.menu-item:hover::before {
+  opacity: 1;
+}
+
+.menu-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 40px rgba(0, 255, 255, 0.2),
+    0 0 60px rgba(255, 0, 255, 0.1);
+}
+
+/* ============================================
+   VOICE BUTTON
+   ============================================ */
+
+.voice-button {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--neon-magenta) 0%,
+    var(--neon-cyan) 100%
+  );
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.voice-button::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--neon-magenta) 0%,
+    var(--neon-cyan) 100%
+  );
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.voice-button:hover::before,
+.voice-button.listening::before {
+  opacity: 0.5;
+  animation: voice-pulse 1.5s ease-in-out infinite;
+}
+
+.voice-button.listening {
+  animation: voice-active 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes voice-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+@keyframes voice-active {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+/* ============================================
+   TYPING DOTS ANIMATION
+   ============================================ */
+
+@keyframes typing-dot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-8px);
+    opacity: 1;
+  }
+}
+
+.typing-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--neon-cyan);
+  animation: typing-dot 1.4s ease-in-out infinite;
+  box-shadow: 0 0 8px var(--neon-cyan);
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* ============================================
+   STAT CARD CIRCULAR PROGRESS
+   ============================================ */
+
+.circular-progress {
+  transform: rotate(-90deg);
+}
+
+.circular-progress-track {
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
+.circular-progress-fill {
+  stroke: url(#neon-gradient);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease-out;
+  filter: drop-shadow(0 0 8px var(--neon-cyan));
+}
+
+/* ============================================
+   CUSTOM SCROLLBAR
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--neon-cyan), var(--neon-magenta));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+/* ============================================
+   SPOTLIGHT EFFECT
+   ============================================ */
+
+.spotlight {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 255, 255, 0.1) 0%,
+    rgba(255, 0, 255, 0.05) 30%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  filter: blur(40px);
+}
+
+/* ============================================
+   GRADIENT TEXT
+   ============================================ */
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-animated {
+  background: linear-gradient(
+    90deg,
+    var(--neon-cyan),
+    var(--neon-magenta),
+    var(--neon-cyan)
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 3s linear infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+/* ============================================
+   SKILL TAG HOVER
+   ============================================ */
+
+.skill-tag {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.skill-tag:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px var(--glow-cyan);
+}
+
+/* ============================================
+   ACHIEVEMENT BADGE 3D
+   ============================================ */
+
+.badge-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+
+.badge-3d:hover {
+  transform: rotateY(20deg) rotateX(10deg) scale(1.1);
+}
