@@ -25,13 +25,15 @@ interface UserContextType {
   userState: UserState;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
-  completeOnboarding: (profile: UserProfile) => void;
+  completeOnboarding: (profile: UserProfile) => Promise<void>;
   updateProfile: (profile: Partial<UserProfile>) => void;
   updateGoalStep: (stepId: number, completed: boolean) => void;
   addStudySession: (session: Omit<StudySession, "id">) => void;
   saveClassroomNote: (note: Omit<ClassroomNote, "id" | "createdAt">) => void;
   getAnalytics: () => UserAnalytics;
+  regenerateGoalSteps: () => Promise<void>;
   isLoading: boolean;
+  isGeneratingSteps: boolean;
 }
 
 const defaultAuthState: AuthState = {
@@ -145,6 +147,7 @@ function calculateAnalytics(sessions: StudySession[]): UserAnalytics {
 export function UserProvider({ children }: { children: ReactNode }) {
   const [userState, setUserState] = useState<UserState>(defaultUserState);
   const [isLoading, setIsLoading] = useState(true);
+  const [isGeneratingSteps, setIsGeneratingSteps] = useState(false);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -202,9 +205,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem(STORAGE_KEY);
   }, []);
 
-  const completeOnboarding = useCallback((profile: UserProfile) => {
-    const goalSteps = generateGoalSteps(profile.goal, profile.skills);
-
+  const completeOnboarding = useCallback(async (profile: UserProfile) => {
+    // First set the profile and mark as onboarded with local fallback steps
+    const localSteps = generateGoalSteps(profile.goal, profile.skills);
+    
     setUserState((prev) => ({
       ...prev,
       auth: {
@@ -212,8 +216,43 @@ export function UserProvider({ children }: { children: ReactNode }) {
         isOnboarded: true,
       },
       profile,
-      goalSteps,
+      goalSteps: localSteps,
     }));
+
+    // Then try to get AI-generated personalized steps
+    setIsGeneratingSteps(true);
+    try {
+      const response = await fetch("/api/generate-steps", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ goal: profile.goal, skills: profile.skills }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.steps && data.steps.length > 0) {
+          const aiSteps: GoalStep[] = data.steps.map((step: { title: string; description: string; deadline: string; estimatedDays: number; resources?: string[] }, index: number) => ({
+            id: index + 1,
+            title: step.title,
+            description: step.description,
+            deadline: step.deadline,
+            estimatedDays: step.estimatedDays,
+            resources: step.resources || [],
+            completed: false,
+            current: index === 0,
+          }));
+          
+          setUserState((prev) => ({
+            ...prev,
+            goalSteps: aiSteps,
+          }));
+        }
+      }
+    } catch (error) {
+      console.error("Failed to generate AI steps, using local fallback:", error);
+    } finally {
+      setIsGeneratingSteps(false);
+    }
   }, []);
 
   const updateProfile = useCallback((updates: Partial<UserProfile>) => {
@@ -293,6 +332,47 @@ export function UserProvider({ children }: { children: ReactNode }) {
     return calculateAnalytics(userState.studySessions);
   }, [userState.studySessions]);
 
+  const regenerateGoalSteps = useCallback(async () => {
+    if (!userState.profile) return;
+    
+    setIsGeneratingSteps(true);
+    try {
+      const response = await fetch("/api/generate-steps", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          goal: userState.profile.goal, 
+          skills: userState.profile.skills 
+        }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.steps && data.steps.length > 0) {
+          const aiSteps: GoalStep[] = data.steps.map((step: { title: string; description: string; deadline: string; estimatedDays: number; resources?: string[] }, index: number) => ({
+            id: index + 1,
+            title: step.title,
+            description: step.description,
+            deadline: step.deadline,
+            estimatedDays: step.estimatedDays,
+            resources: step.resources || [],
+            completed: false,
+            current: index === 0,
+          }));
+          
+          setUserState((prev) => ({
+            ...prev,
+            goalSteps: aiSteps,
+          }));
+        }
+      }
+    } catch (error) {
+      console.error("Failed to regenerate steps:", error);
+    } finally {
+      setIsGeneratingSteps(false);
+    }
+  }, [userState.profile]);
+
   return (
     <UserContext.Provider
       value={{
@@ -305,7 +385,9 @@ export function UserProvider({ children }: { children: ReactNode }) {
         addStudySession,
         saveClassroomNote,
         getAnalytics,
+        regenerateGoalSteps,
         isLoading,
+        isGeneratingSteps,
       }}
     >
       {children}
